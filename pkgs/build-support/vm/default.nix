@@ -362,7 +362,6 @@ rec {
   runInLinuxVM = drv: lib.overrideDerivation drv ({ memSize ? 512, QEMU_OPTS ? "", args, builder, ... }: {
     requiredSystemFeatures = [ "kvm" ];
     builder = "${bash}/bin/sh";
-    #builder = "${bash}/bin/bash";
     args = ["-e" (vmRunCommand qemuCommandLinux)];
     origArgs = args;
     origBuilder = builder;
