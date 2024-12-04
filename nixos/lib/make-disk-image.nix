@@ -324,9 +324,11 @@ let format' = format; in let
       nixos-enter
       nix
       systemdMinimal
+      coreutils
+      findutils
+      util-linux
     ]
-    ++ lib.optional deterministic gptfdisk
-    ++ stdenv.initialPath);
+    ++ lib.optional deterministic gptfdisk);
 
   # I'm preserving the line below because I'm going to search for it across nixpkgs to consolidate
   # image building logic. The comment right below this now appears in 4 different places in nixpkgs :)
@@ -538,9 +540,14 @@ let format' = format; in let
     mkdir -p $out/nix-support
     echo "file ${format}-image $out/${filename}" >> $out/nix-support/hydra-build-products
   '';
+  
+  hostSystem = pkgs.stdenv.hostPlatform.system;
+  targetArch = if ( hostSystem == "x86_64-linux") then  
+       "gnu64" else
+       "aarch64-multiplatform";
 
   buildImage = pkgs.vmTools.runInLinuxVM (
-    pkgs.runCommand name {
+    pkgs.pkgsCross.${targetArch}.runCommand name {
       preVM = prepareImage + lib.optionalString touchEFIVars createEFIVars;
       buildInputs = with pkgs; [ util-linux e2fsprogs dosfstools ];
       postVM = moveOrConvertImage + createHydraBuildProducts + postVM;
