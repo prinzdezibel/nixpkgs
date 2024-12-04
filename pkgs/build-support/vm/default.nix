@@ -228,7 +228,6 @@ rec {
       concatTo argsArray origArgs
 
       "$origBuilder" "''${argsArray[@]}"
-      #"$builder" "''${argsArray[@]}"
 
       echo $? > /tmp/xchg/in-vm-exit
 

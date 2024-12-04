@@ -541,13 +541,15 @@ let format' = format; in let
     echo "file ${format}-image $out/${filename}" >> $out/nix-support/hydra-build-products
   '';
   
+  buildSystem = pkgs.stdenv.buildPlatform.system;
   hostSystem = pkgs.stdenv.hostPlatform.system;
-  targetArch = if ( hostSystem == "x86_64-linux") then  
-       "gnu64" else
-       "aarch64-multiplatform";
+  crossPkgs = if (hostSystem != buildSystem) then
+      import <nixpkgs> { system = hostSystem; }
+    else
+      pkgs;
 
   buildImage = pkgs.vmTools.runInLinuxVM (
-    pkgs.pkgsCross.${targetArch}.runCommand name {
+    crossPkgs.runCommand name {
       preVM = prepareImage + lib.optionalString touchEFIVars createEFIVars;
       buildInputs = with pkgs; [ util-linux e2fsprogs dosfstools ];
       postVM = moveOrConvertImage + createHydraBuildProducts + postVM;
