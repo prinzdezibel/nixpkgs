@@ -16,6 +16,7 @@
 # from a stdenv platform (or a JSON file).
 , target ? stdenv.hostPlatform.rust.cargoShortTarget
 }:
+
 {
   cargoBuildHook = callPackage ({ }:
     makeSetupHook {
@@ -75,7 +76,6 @@
         '';
       };
     } ./cargo-setup-hook.sh) {};
-
 
   maturinBuildHook = callPackage ({ pkgsHostTarget }:
     makeSetupHook {
