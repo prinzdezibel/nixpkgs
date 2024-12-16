@@ -16,10 +16,6 @@
 # from a stdenv platform (or a JSON file).
 , target ? stdenv.hostPlatform.rust.cargoShortTarget
 }:
-let
- inherit (python3) pythonOnBuildForHost;
- pythonInterpreter = pythonOnBuildForHost.interpreter;
-in
 {
   cargoBuildHook = callPackage ({ }:
     makeSetupHook {
@@ -91,7 +87,7 @@ in
       ];
       substitutions = {
         inherit (rust.envVars) rustTargetPlatformSpec setEnv;
-        pythonInterpreter = lib.versions.majorMinor pythonOnBuildForHost.version;
+        pythonExecutable = python3.executable;
       };
     } ./maturin-build-hook.sh) {};
 
