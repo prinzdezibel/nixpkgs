@@ -27,6 +27,7 @@ stdenv.mkDerivation {
     ;
 
   patches = [
+    # Submitted upstream: https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/32497
     ./darwin-build-fix.patch
   ];
 
@@ -67,6 +68,11 @@ stdenv.mkDerivation {
     (lib.mesonEnable "llvm" true)
   ];
 
-  # Don't need this on Darwin.
-  passthru.llvmpipeHook = null;
+  passthru = {
+    # needed to pass evaluation of bad platforms
+    driverLink = throw "driverLink not supported on darwin";
+    # Don't need this on Darwin.
+    llvmpipeHook = null;
+  };
+
 }

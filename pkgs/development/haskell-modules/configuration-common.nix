@@ -240,6 +240,14 @@ self: super: {
     ];
   }) super.statistics;
 
+  # Work around -Werror failures until a more permanent solution is released
+  # https://github.com/haskell-cryptography/HsOpenSSL/issues/88
+  # https://github.com/haskell-cryptography/HsOpenSSL/issues/93
+  # https://github.com/haskell-cryptography/HsOpenSSL/issues/95
+  HsOpenSSL = appendConfigureFlags [
+    "--ghc-option=-optc=-Wno-incompatible-pointer-types"
+  ] super.HsOpenSSL;
+
   # There are numerical tests on random data, that may fail occasionally
   lapack = dontCheck super.lapack;
 
@@ -2617,9 +2625,36 @@ self: super: {
     testTarget = "tests";
   }) super.conduit-aeson;
 
-  # Upper bounds are too strict:
-  # https://github.com/velveteer/hermes/pull/22
-  hermes-json = doJailbreak super.hermes-json;
+  hermes-json = overrideCabal (drv: {
+    # Upper bounds are too strict:
+    # https://github.com/velveteer/hermes/pull/22
+    jailbreak = true;
+
+    # vendored simdjson breaks with clang-19. apply patches that work with
+    # a more recent simdjson so we can un-vendor it
+    patches = drv.patches or [] ++ [
+      (fetchpatch {
+        url = "https://github.com/velveteer/hermes/commit/6fd9904d93a5c001aadb27c114345a6958904d71.patch";
+        hash = "sha256-Pv09XP0/VjUiAFp237Adj06PIZU21mQRh7guTlKksvA=";
+        excludes = [
+          ".github/*"
+          "hermes-bench/*"
+        ];
+      })
+      (fetchpatch {
+        url = "https://github.com/velveteer/hermes/commit/ca8dddbf52f9d7788460a056fefeb241bcd09190.patch";
+        hash = "sha256-tDDGS0QZ3YWe7+SP09wnxx6lIWL986ce5Zhqr7F2sBk=";
+        excludes = [
+          "README.md"
+          ".github/*"
+          "hermes-bench/*"
+        ];
+      })
+    ];
+    postPatch = drv.postPatch or "" + ''
+      ln -fs ${pkgs.simdjson.src} simdjson
+    '';
+  }) super.hermes-json;
 
   # Disabling doctests.
   regex-tdfa = overrideCabal {

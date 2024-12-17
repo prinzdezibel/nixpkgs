@@ -12,7 +12,7 @@
   cups,
   nspr,
   nss,
-  mesa, # for libgbm
+  libgbm,
   xorg,
   xdg-utils,
   libdrm,
@@ -57,7 +57,7 @@ let
     cups
     nspr
     nss
-    mesa
+    libgbm
     xorg.libxshmfence
     xorg.libXScrnSaver
     xorg.libXtst

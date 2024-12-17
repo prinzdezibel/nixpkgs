@@ -29,6 +29,8 @@ buildPythonPackage {
 
   nativeBuildInputs = [ poetry-core ];
 
+  pythonRelaxDeps = [ "numpy" ];
+
   propagatedBuildInputs = [
     cssselect
     lxml

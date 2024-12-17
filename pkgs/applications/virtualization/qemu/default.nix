@@ -22,7 +22,7 @@
 , xenSupport ? false, xen
 , cephSupport ? false, ceph
 , glusterfsSupport ? false, glusterfs, libuuid
-, openGLSupport ? sdlSupport, mesa, libepoxy, libdrm
+, openGLSupport ? sdlSupport, libgbm, libepoxy, libdrm
 , rutabagaSupport ? openGLSupport && !minimal && lib.meta.availableOn stdenv.hostPlatform rutabaga_gfx, rutabaga_gfx
 , virglSupport ? openGLSupport, virglrenderer
 , libiscsiSupport ? !minimal, libiscsi
@@ -75,11 +75,11 @@ stdenv.mkDerivation (finalAttrs: {
     + lib.optionalString nixosTestRunner "-for-vm-tests"
     + lib.optionalString toolsOnly "-utils"
     + lib.optionalString userOnly "-user";
-  version = "9.1.1";
+  version = "9.1.2";
 
   src = fetchurl {
     url = "https://download.qemu.org/qemu-${finalAttrs.version}.tar.xz";
-    hash = "sha256-fcD52lSR/0SVAPMxAGOja2GfI27kVwb9CEbrN9S7qIk=";
+    hash = "sha256-Gf2ddTWlTW4EThhkAqo7OxvfqHw5LsiISFVZLIUQyW8=";
   };
 
   depsBuildBuild = [ buildPlatformStdenv.cc ]
@@ -119,7 +119,7 @@ stdenv.mkDerivation (finalAttrs: {
     ++ lib.optionals xenSupport [ xen ]
     ++ lib.optionals cephSupport [ ceph ]
     ++ lib.optionals glusterfsSupport [ glusterfs libuuid ]
-    ++ lib.optionals openGLSupport [ mesa libepoxy libdrm ]
+    ++ lib.optionals openGLSupport [ libgbm libepoxy libdrm ]
     ++ lib.optionals rutabagaSupport [ rutabaga_gfx ]
     ++ lib.optionals virglSupport [ virglrenderer ]
     ++ lib.optionals libiscsiSupport [ libiscsi ]
@@ -131,7 +131,7 @@ stdenv.mkDerivation (finalAttrs: {
   dontUseMesonConfigure = true; # meson's configurePhase isn't compatible with qemu build
   dontAddStaticConfigureFlags = true;
 
-  outputs = [ "out" ] ++ lib.optional guestAgentSupport "ga";
+  outputs = [ "out" ] ++ lib.optional enableDocs "doc" ++ lib.optional guestAgentSupport "ga";
   # On aarch64-linux we would shoot over the Hydra's 2G output limit.
   separateDebugInfo = !(stdenv.hostPlatform.isAarch64 && stdenv.hostPlatform.isLinux);
 

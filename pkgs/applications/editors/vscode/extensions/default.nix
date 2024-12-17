@@ -1579,8 +1579,8 @@ let
           # semver scheme, contrary to preview versions which are listed on
           # the VSCode Marketplace and use a calver scheme. We should avoid
           # using preview versions, because they expire after two weeks.
-          version = "15.6.0";
-          hash = "sha256-s6ur76DyNhwuZOYma2zPfYEs3lMliRuhdmZhITCSCPE=";
+          version = "16.0.5";
+          hash = "sha256-9xvArjUXxgofGuEg+XcrI5cX32gd9CvPZxWlj4eKavo=";
         };
         meta = {
           changelog = "https://marketplace.visualstudio.com/items/eamodio.gitlens/changelog";
@@ -2071,8 +2071,8 @@ let
         mktplcRef = {
           publisher = "github";
           name = "copilot";
-          version = "1.246.1233"; # compatible with vscode ^1.95
-          hash = "sha256-Pz46qTCGtn7q7UqCzwkQbuEEkH6tKxZV1HKSUs9WA8M=";
+          version = "1.251.0"; # compatible with vscode ^1.96
+          hash = "sha256-nv6lTPTPcggwMgO8a4KAF0W7gpou1399f/axnH0sS4s=";
         };
 
         meta = {
@@ -2089,8 +2089,8 @@ let
           publisher = "github";
           name = "copilot-chat";
           # Verify which version is available with nix run nixpkgs#vsce -- show github.copilot-chat --json
-          version = "0.23.2024102903"; # compatible with vscode ^1.95
-          hash = "sha256-FGvB+b24i23bdhpJpCQDvIHqqFvCJrWAKnX6fJgkr2E=";
+          version = "0.24.2024121201"; # compatible with vscode ^1.96
+          hash = "sha256-v3wdodDzYalz927KqqpL4IqEqLRmx1CLWdGBvZgNmpE=";
         };
         meta = {
           description = "GitHub Copilot Chat is a companion extension to GitHub Copilot that houses experimental chat features";
@@ -3246,8 +3246,8 @@ let
         mktplcRef = {
           name = "compare-folders";
           publisher = "moshfeu";
-          version = "0.24.3";
-          hash = "sha256-eaumF2BIqEYoyL7LQ0Wx3+gkkFGpWKQoN3AisI8wTQY=";
+          version = "0.25.1";
+          hash = "sha256-axNTdnSkMkFs7LSZCc7VinjbrDncsRHlRtDG9+eh2qQ=";
         };
 
         meta = {
@@ -5333,8 +5333,8 @@ let
         mktplcRef = {
           name = "vscode-icons";
           publisher = "vscode-icons-team";
-          version = "12.9.0";
-          hash = "sha256-ULjZlbGcVbPiokfnx7d4z7cmVVEfy2d+SUch80rZRA4=";
+          version = "12.10.0";
+          hash = "sha256-GNDLuszuJN3P0V25F4gm7yUJsFEQgFMMPMTFLWLIvSo=";
         };
         meta = {
           description = "Bring real icons to your Visual Studio Code";

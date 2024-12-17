@@ -112,6 +112,10 @@ mapAliases {
   apacheKafka_3_5 = throw "apacheKafka_2_8 through _3_5 have been removed from nixpkgs as outdated"; # Added 2024-06-13
   antimicroX = throw "'antimicroX' has been renamed to/replaced by 'antimicrox'"; # Converted to throw 2024-10-17
   apacheAnt = ant; # Added 2024-11-28
+  apple-sdk_10_12 = throw "apple-sdk_10_12 was removed as Nixpkgs no longer supports macOS 10.12; see the 25.05 release notes"; # Added 2024-10-27
+  apple-sdk_10_13 = throw "apple-sdk_10_13 was removed as Nixpkgs no longer supports macOS 10.13; see the 25.05 release notes"; # Added 2024-10-27
+  apple-sdk_10_14 = throw "apple-sdk_10_14 was removed as Nixpkgs no longer supprots macOS 10.14; see the 25.05 release notes"; # Added 2024-10-27
+  apple-sdk_10_15 = throw "apple-sdk_10_15 was removed as Nixpkgs no longer supports macOS 10.15; see the 25.05 release notes"; # Added 2024-10-27
   appthreat-depscan = dep-scan; # Added 2024-04-10
   arcanist = throw "arcanist was removed as phabricator is not supported and does not accept fixes"; # Added 2024-06-07
   aria = aria2; # Added 2024-03-26
@@ -155,6 +159,8 @@ mapAliases {
   bloom = throw "'bloom' has been removed because it was unmaintained upstream."; # Added 2024-11-02
   bmap-tools = bmaptool; # Added 2024-08-05
   boost175 = throw "Boost 1.75 has been removed as it is obsolete and no longer used by anything in Nixpkgs"; # Added 2024-11-24
+  boost184 = throw "Boost 1.84 has been removed as it is obsolete and no longer used by anything in Nixpkgs"; # Added 2024-11-24
+  boost185 = throw "Boost 1.85 has been removed as it is obsolete and no longer used by anything in Nixpkgs"; # Added 2024-11-24
   boost_process = throw "boost_process has been removed as it is included in regular boost"; # Added 2024-05-01
   bpb = throw "bpb has been removed as it is unmaintained and not compatible with recent Rust versions"; # Added 2024-04-30
   bpftool = throw "'bpftool' has been renamed to/replaced by 'bpftools'"; # Converted to throw 2024-10-17
@@ -169,10 +175,10 @@ mapAliases {
   inherit (libsForQt5.mauiPackages) buho; # added 2022-05-17
   butler = throw "butler was removed because it was broken and abandoned upstream"; # added 2024-06-18
   bwidget = tclPackages.bwidget; # Added 2024-10-02
-  # Shorter names; keep the longer name for back-compat. Added 2023-04-11
-  buildFHSUserEnv = buildFHSEnv;
-  buildFHSUserEnvChroot = buildFHSEnvChroot;
-  buildFHSUserEnvBubblewrap = buildFHSEnvBubblewrap;
+  # Shorter names; keep the longer name for back-compat. Added 2023-04-11. Warning added on 2024-12-16
+  buildFHSUserEnv = lib.warnOnInstantiate "'buildFHSUserEnv' as been renamed to 'buildFHSEnv' and will be removed in 25.11" buildFHSEnv;
+  buildFHSUserEnvChroot = lib.warnOnInstantiate "'buildFHSUserEnvChroot' has been renamed to 'buildFHSEnvChroot' and will be removed in 25.11" buildFHSEnvChroot;
+  buildFHSUserEnvBubblewrap = lib.warnOnInstantiate "'buildFHSUserEnvBubblewrap' has been renamed to 'buildFHSEnvBubblewrap' and will be removed in 25.11" buildFHSEnvBubblewrap;
 
   # bitwarden_rs renamed to vaultwarden with release 1.21.0 (2021-04-30)
   bitwarden_rs = vaultwarden;
@@ -390,6 +396,7 @@ mapAliases {
   flutter322 = throw "flutter322 has been removed because it isn't updated anymore, and no packages in nixpkgs use it. If you still need it, use flutter.mkFlutter to get a custom version"; # Added 2024-10-05
   flutter323 = throw "flutter323 has been removed because it isn't updated anymore, and no packages in nixpkgs use it. If you still need it, use flutter.mkFlutter to get a custom version"; # Added 2024-10-05
   fluxus = throw "fluxus has been removed because it hasn't been updated in 9 years and depended on insecure Racket 7.9"; # Added 2024-12-06
+  fmt_8 = throw "fmt_8 has been removed as it is obsolete and was no longer used in the tree"; # Added 2024-11-12
   foldingathome = throw "'foldingathome' has been renamed to/replaced by 'fahclient'"; # Converted to throw 2024-10-17
   forgejo-actions-runner = forgejo-runner; # Added 2024-04-04
 
@@ -531,6 +538,7 @@ mapAliases {
   HentaiAtHome = hentai-at-home; # Added 2024-06-12
   hll2390dw-cups = throw "The hll2390dw-cups package was dropped since it was unmaintained."; # Added 2024-06-21
   hop-cli = throw "hop-cli has been removed as the service has been shut-down"; # Added 2024-08-13
+  hpp-fcl = coal; # Added 2024-11-15
   ht-rust = throw "'ht-rust' has been renamed to/replaced by 'xh'"; # Converted to throw 2024-10-17
   hydra_unstable = hydra; # Added 2024-08-22
   hydron = throw "hydron has been removed as the project has been archived upstream since 2022 and is affected by a severe remote code execution vulnerability";
@@ -584,6 +592,7 @@ mapAliases {
 
   k3s_1_26 = throw "'k3s_1_26' has been removed from nixpkgs as it has reached end of life"; # Added 2024-05-20
   k3s_1_27 = throw "'k3s_1_27' has been removed from nixpkgs as it has reached end of life on 2024-06-28"; # Added 2024-06-01
+  k3s_1_28 = throw "'k3s_1_28' has been removed from nixpkgs as it has reached end of life"; # Added 2024-12-15
   # k3d was a 3d editing software k-3d - "k3d has been removed because it was broken and has seen no release since 2016" Added 2022-01-04
   # now kube3d/k3d will take it's place
   kube3d = k3d; # Added 2022-0705
@@ -788,6 +797,7 @@ mapAliases {
   mariadb_110 = throw "mariadb_110 has been removed from nixpkgs, please switch to another version like mariadb_114"; # Added 2024-08-15
   mariadb-client = hiPrio mariadb.client; #added 2019.07.28
   maligned = throw "maligned was deprecated upstream in favor of x/tools/go/analysis/passes/fieldalignment"; # Added 20204-08-24
+  manicode = throw "manicode has been renamed to codebuff"; # Added 2024-12-10
   marwaita-manjaro = lib.warnOnInstantiate "marwaita-manjaro has been renamed to marwaita-teal" marwaita-teal; # Added 2024-07-08
   marwaita-peppermint = lib.warnOnInstantiate "marwaita-peppermint has been renamed to marwaita-red" marwaita-red; # Added 2024-07-01
   marwaita-ubuntu = lib.warnOnInstantiate "marwaita-ubuntu has been renamed to marwaita-orange" marwaita-orange; # Added 2024-07-08
@@ -803,6 +813,10 @@ mapAliases {
   mcomix3 = mcomix; # Added 2022-06-05
   mdt = md-tui; # Added 2024-09-03
   meme = throw "'meme' has been renamed to/replaced by 'meme-image-generator'"; # Converted to throw 2024-10-17
+  memorymapping = throw "memorymapping has been removed, as it was only useful on old macOS versions that are no longer supported"; # Added 2024-10-05
+  memorymappingHook = throw "memorymapping has been removed, as it was only useful on old macOS versions that are no longer supported"; # Added 2024-10-05
+  memstream = throw "memstream has been removed, as it was only useful on old macOS versions that are no longer supported"; # Added 2024-10-05
+  memstreamHook = throw "memstream has been removed, as it was only useful on old macOS versions that are no longer supported"; # Added 2024-10-05
   mhwaveedit = throw "'mkwaveedit' has been removed due to lack of maintenance upstream. Consider using 'audacity' or 'tenacity' instead";
   microcodeAmd = microcode-amd; # Added 2024-09-08
   microcodeIntel = microcode-intel; # Added 2024-09-08
@@ -864,7 +878,8 @@ mapAliases {
   nextcloud27Packages = throw "Nextcloud27 is EOL!"; # Added 2024-06-25
   nagiosPluginsOfficial = monitoring-plugins;
   neochat = libsForQt5.kdeGear.neochat; # added 2022-05-10
-  nerdfonts = throw ''nerdfonts has been separated into individual font packages under the namespace nerd-fonts.
+  nerdfonts = throw ''
+    nerdfonts has been separated into individual font packages under the namespace nerd-fonts.
     For example change:
       fonts.packages = [
         ...
@@ -874,10 +889,10 @@ mapAliases {
       fonts.packages = [
         ...
         pkgs.nerd-fonts._0xproto
-        pkgs.nerd-fonts.droid_sans_mono
+        pkgs.nerd-fonts.droid-sans-mono
       ]
     or for all fonts
-      font.packages = [ ... ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts)
+      fonts.packages = [ ... ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts)
   ''; # Added 2024-11-09
   newlibCross = newlib; # Added 2024-09-06
   newlib-nanoCross = newlib-nano; # Added 2024-09-06
@@ -1027,7 +1042,7 @@ mapAliases {
   tex-match = throw "'tex-match' has been removed due to lack of maintenance upstream. Consider using 'hieroglyphic' instead"; # Added 2024-09-24
   texinfo5 = throw "'texinfo5' has been removed from nixpkgs"; # Added 2024-09-10
   timescaledb = postgresqlPackages.timescaledb;
-  tsearch_extras = postgresqlPackages.tsearch_extras;
+  tsearch_extras = throw "'tsearch_extras' has been removed from nixpkgs"; # Added 2024-12-15
 
   postgresql_12 = throw "postgresql_12 has been removed since it reached its EOL upstream"; # Added 2024-11-14
   postgresql_12_jit = throw "postgresql_12 has been removed since it reached its EOL upstream"; # Added 2024-11-14
@@ -1248,6 +1263,7 @@ mapAliases {
   taplo-cli = taplo; # Added 2022-07-30
   taplo-lsp = taplo; # Added 2022-07-30
   taro = taproot-assets; # Added 2023-07-04
+  tbb_2021_5 = throw "tbb_2021_5 has been removed from nixpkgs, as it broke with GCC 14";
   tcl-fcgi = tclPackages.tcl-fcgi; # Added 2024-10-02
   tclcurl = tclPackages.tclcurl; # Added 2024-10-02
   tcllib = tclPackages.tcllib; # Added 2024-10-02
