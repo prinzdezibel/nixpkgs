@@ -45,7 +45,7 @@ stdenv.mkDerivation (rec {
 
   strictDeps = true;
   # TODO: Add a "dev" output containing the header files.
-  outputs = [ "out" "man" "devdoc" ] ++
+  outputs = [ "out" ] ++
     lib.optional crossCompiling "mini";
   setOutputFlags = false;
 
@@ -139,10 +139,17 @@ stdenv.mkDerivation (rec {
   configureScript = lib.optionalString (!crossCompiling) "${stdenv.shell} ./Configure";
 
   # !canExecute cross uses miniperl which doesn't have this
-  postConfigure = lib.optionalString (!crossCompiling && stdenv.cc.targetPrefix != "") ''
-    substituteInPlace Makefile \
-      --replace-fail "AR = ar" "AR = ${stdenv.cc.targetPrefix}ar"
-  '';
+  postConfigure = ''
+      substituteInPlace Makefile \
+        --replace-fail 'all: $(FIRSTMAKEFILE) $(MINIPERL_EXE) $(generated_pods)' "all: $(FIRSTMAKEFILE) $(MINIPERL_EXE)" \
+        --replace-fail 'pod/perltoc.pod: $(perltoc_pod_prereqs) $(PERL_EXE) $(ext) pod/buildtoc' "pod/perltoc.pod: ;" \
+        --replace-fail '$(RUN_PERL) -f pod/buildtoc -q' "" \
+        --replace-fail '$(RUN_PERL) installman --destdir=$(DESTDIR)' "# Don't run installman."
+    ''
+    + lib.optionalString (!crossCompiling && stdenv.cc.targetPrefix != "") ''
+      substituteInPlace Makefile \
+        --replace-fail "AR = ar" "AR = ${stdenv.cc.targetPrefix}ar"
+      '';
 
   dontAddStaticConfigureFlags = true;
 
