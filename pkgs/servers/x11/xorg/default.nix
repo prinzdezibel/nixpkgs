@@ -1063,11 +1063,11 @@ self: with self; {
   # THIS IS A GENERATED FILE.  DO NOT EDIT!
   libICE = callPackage ({ stdenv, pkg-config, fetchurl, xorgproto, xtrans, testers }: stdenv.mkDerivation (finalAttrs: {
     pname = "libICE";
-    version = "1.1.1";
+    version = "1.1.2";
     builder = ./builder.sh;
     src = fetchurl {
-      url = "mirror://xorg/individual/lib/libICE-1.1.1.tar.xz";
-      sha256 = "0lg4sddalwmmzsnxv3fgdm2hzqp66j8b3syc0ancfhi9yzx7mrq3";
+      url = "mirror://xorg/individual/lib/libICE-1.1.2.tar.xz";
+      sha256 = "09c656nqkz3dpik012d2cwmd5a2dkxqgjpcq2v3v6pi22ka4wklp";
     };
     hardeningDisable = [ "bindnow" "relro" ];
     strictDeps = true;
@@ -1083,11 +1083,11 @@ self: with self; {
   # THIS IS A GENERATED FILE.  DO NOT EDIT!
   libSM = callPackage ({ stdenv, pkg-config, fetchurl, libICE, libuuid, xorgproto, xtrans, testers }: stdenv.mkDerivation (finalAttrs: {
     pname = "libSM";
-    version = "1.2.4";
+    version = "1.2.5";
     builder = ./builder.sh;
     src = fetchurl {
-      url = "mirror://xorg/individual/lib/libSM-1.2.4.tar.xz";
-      sha256 = "113vx53k6pyxf84v5kqb7qhcldx1fi78lym77lcb2xhj9lgfbjzx";
+      url = "mirror://xorg/individual/lib/libSM-1.2.5.tar.xz";
+      sha256 = "1g10pn1zhcyc1ys8skp6p46gn6qgkif8kqdwlz1hsrzgllny3y9a";
     };
     hardeningDisable = [ "bindnow" "relro" ];
     strictDeps = true;
@@ -1183,11 +1183,11 @@ self: with self; {
   # THIS IS A GENERATED FILE.  DO NOT EDIT!
   libXau = callPackage ({ stdenv, pkg-config, fetchurl, xorgproto, testers }: stdenv.mkDerivation (finalAttrs: {
     pname = "libXau";
-    version = "1.0.11";
+    version = "1.0.12";
     builder = ./builder.sh;
     src = fetchurl {
-      url = "mirror://xorg/individual/lib/libXau-1.0.11.tar.xz";
-      sha256 = "1sxv56rql3vsb14za0hgr07mipgvvcw48910srmky32pyn135ypk";
+      url = "mirror://xorg/individual/lib/libXau-1.0.12.tar.xz";
+      sha256 = "1yy0gx3psxyjcj284xhh44labav7b5zs7gcrks9xi6nklggy9l3l";
     };
     hardeningDisable = [ "bindnow" "relro" ];
     strictDeps = true;

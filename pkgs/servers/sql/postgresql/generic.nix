@@ -146,51 +146,48 @@ let
         "lib"
         "man"
       ];
-      outputChecks =
-        {
-          out = {
-            disallowedReferences = [
-              "dev"
-              "doc"
-              "man"
-            ];
-            disallowedRequisites = [
-              stdenv'.cc
-              llvmPackages.llvm.out
-            ] ++ (map lib.getDev (builtins.filter (drv: drv ? "dev") finalAttrs.buildInputs));
-          };
-
-          lib = {
-            disallowedReferences = [
-              "out"
-              "dev"
-              "doc"
-              "man"
-            ];
-            disallowedRequisites = [
-              stdenv'.cc
-              llvmPackages.llvm.out
-            ] ++ (map lib.getDev (builtins.filter (drv: drv ? "dev") finalAttrs.buildInputs));
-          };
-        }
-        // lib.optionalAttrs (atLeast "14" && olderThan "15") {
-          # TODO: Make this unconditional via staging because of number of rebuilds.
-          doc = {
-            disallowedReferences = [
-              "out"
-              "dev"
-              "man"
-            ];
-          };
-
-          man = {
-            disallowedReferences = [
-              "out"
-              "dev"
-              "doc"
-            ];
-          };
+      outputChecks = {
+        out = {
+          disallowedReferences = [
+            "dev"
+            "doc"
+            "man"
+          ];
+          disallowedRequisites = [
+            stdenv'.cc
+            llvmPackages.llvm.out
+          ] ++ (map lib.getDev (builtins.filter (drv: drv ? "dev") finalAttrs.buildInputs));
         };
+
+        lib = {
+          disallowedReferences = [
+            "out"
+            "dev"
+            "doc"
+            "man"
+          ];
+          disallowedRequisites = [
+            stdenv'.cc
+            llvmPackages.llvm.out
+          ] ++ (map lib.getDev (builtins.filter (drv: drv ? "dev") finalAttrs.buildInputs));
+        };
+
+        doc = {
+          disallowedReferences = [
+            "out"
+            "dev"
+            "man"
+          ];
+        };
+
+        man = {
+          disallowedReferences = [
+            "out"
+            "dev"
+            "doc"
+          ];
+        };
+      };
 
       strictDeps = true;
 
@@ -387,9 +384,15 @@ let
       # https://www.postgresql.org/message-id/flat/4D8E1BC5-BBCF-4B19-8226-359201EA8305%40gmail.com
       # Also see <nixpkgs>/doc/stdenv/platform-notes.chapter.md
       doCheck = false;
-      # Tests just get stuck on macOS 14.x for v13 and v14
       doInstallCheck =
-        !(stdenv'.hostPlatform.isDarwin && olderThan "15") && !(stdenv'.hostPlatform.isStatic);
+        !(stdenv'.hostPlatform.isStatic)
+        &&
+          # Tests just get stuck on macOS 14.x for v13 and v14
+          !(stdenv'.hostPlatform.isDarwin && olderThan "15")
+        &&
+          # Likely due to rosetta emulation:
+          #   FATAL:  could not create shared memory segment: Cannot allocate memory
+          !(stdenv'.hostPlatform.isDarwin && stdenv'.hostPlatform.isx86_64);
       installCheckTarget = "check-world";
 
       passthru =

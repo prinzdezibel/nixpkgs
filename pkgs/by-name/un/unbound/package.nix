@@ -58,15 +58,16 @@ stdenv.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "NLnetLabs";
     repo = "unbound";
-    rev = "refs/tags/release-${finalAttrs.version}";
+    tag = "release-${finalAttrs.version}";
     hash = "sha256-CFsd8tdFL+JbxmDZoWdStvWcs9azSaLtMG8Ih5oXE/A=";
   };
 
   outputs = [ "out" "lib" "man" ]; # "dev" would only split ~20 kB
 
-  nativeBuildInputs = [ bison flex pkg-config ]
-    ++ lib.optionals withMakeWrapper [ makeWrapper ]
+  nativeBuildInputs =
+    lib.optionals withMakeWrapper [ makeWrapper ]
     ++ lib.optionals withDNSTAP [ protobufc ]
+    ++ [ pkg-config flex bison ]
     ++ lib.optionals withPythonModule [ swig ];
 
   buildInputs = [ openssl nettle expat libevent ]

@@ -131,6 +131,8 @@ self: super: with self; {
 
   aggdraw = callPackage ../development/python-modules/aggdraw { };
 
+  ahocorapy = callPackage ../development/python-modules/ahocorapy { };
+
   ahocorasick-rs = callPackage ../development/python-modules/ahocorasick-rs { };
 
   aigpy = callPackage ../development/python-modules/aigpy { };
@@ -1565,6 +1567,8 @@ self: super: with self; {
 
   bdffont = callPackage ../development/python-modules/bdffont { };
 
+  beacontools = callPackage ../development/python-modules/beacontools { };
+
   beaker = callPackage ../development/python-modules/beaker { };
 
   before-after = callPackage ../development/python-modules/before-after { };
@@ -2563,6 +2567,8 @@ self: super: with self; {
   commoncode = callPackage ../development/python-modules/commoncode { };
 
   commonmark = callPackage ../development/python-modules/commonmark { };
+
+  commonregex = callPackage ../development/python-modules/commonregex { };
 
   complycube = callPackage ../development/python-modules/complycube { };
 
@@ -5483,6 +5489,8 @@ self: super: with self; {
 
   gorilla = callPackage ../development/python-modules/gorilla { };
 
+  goslide-api = callPackage ../development/python-modules/goslide-api { };
+
   govee-ble = callPackage ../development/python-modules/govee-ble { };
 
   govee-led-wez = callPackage ../development/python-modules/govee-led-wez { };
@@ -6694,6 +6702,8 @@ self: super: with self; {
   jsonfield = callPackage ../development/python-modules/jsonfield { };
 
   jsonlines = callPackage ../development/python-modules/jsonlines { };
+
+  json-api-doc = callPackage ../development/python-modules/json-api-doc { };
 
   json-logging = callPackage ../development/python-modules/json-logging { };
 
@@ -8153,6 +8163,8 @@ self: super: with self; {
 
   midea-beautiful-air = callPackage ../development/python-modules/midea-beautiful-air { };
 
+  midea-local = callPackage ../development/python-modules/midea-local { };
+
   midiutil = callPackage ../development/python-modules/midiutil { };
 
   mido = callPackage ../development/python-modules/mido { };
@@ -8253,6 +8265,8 @@ self: super: with self; {
   mkdocs-get-deps = callPackage ../development/python-modules/mkdocs-get-deps { };
 
   mkdocs-git-authors-plugin = callPackage ../development/python-modules/mkdocs-git-authors-plugin { };
+
+  mkdocs-git-committers-plugin-2 = callPackage ../development/python-modules/mkdocs-git-committers-plugin-2 { };
 
   mkdocs-git-revision-date-localized-plugin = callPackage ../development/python-modules/mkdocs-git-revision-date-localized-plugin { };
 
@@ -10324,6 +10338,8 @@ self: super: with self; {
 
   pick = callPackage ../development/python-modules/pick { };
 
+  pickpack = callPackage ../development/python-modules/pickpack { };
+
   pickleshare = callPackage ../development/python-modules/pickleshare { };
 
   picobox = callPackage ../development/python-modules/picobox { };
@@ -10974,6 +10990,8 @@ self: super: with self; {
   power = callPackage ../development/python-modules/power { };
 
   powerapi = callPackage ../development/python-modules/powerapi { };
+
+  powerfox = callPackage ../development/python-modules/powerfox { };
 
   powerline = callPackage ../development/python-modules/powerline { };
 
@@ -11879,6 +11897,8 @@ self: super: with self; {
   pyjson5 = callPackage ../development/python-modules/pyjson5 { };
 
   pyjsparser = callPackage ../development/python-modules/pyjsparser { };
+
+  pyjvcprojector = callPackage ../development/python-modules/pyjvcprojector { };
 
   pyjwkest = callPackage ../development/python-modules/pyjwkest { };
 
@@ -14303,7 +14323,9 @@ self: super: with self; {
 
   rubymarshal = callPackage ../development/python-modules/rubymarshal { };
 
-  ruff = callPackage ../development/python-modules/ruff { };
+  ruff = callPackage ../development/python-modules/ruff {
+    inherit (pkgs) ruff;
+  };
 
   ruff-api = callPackage ../development/python-modules/ruff-api { };
 
@@ -15361,6 +15383,10 @@ self: super: with self; {
 
   sqlbag = callPackage ../development/python-modules/sqlbag { };
 
+  sqlcipher3 = callPackage ../development/python-modules/sqlcipher3 {};
+  sqlcipher3-binary = callPackage ../development/python-modules/sqlcipher3-binary {};
+  sqlcipher3-wheels = callPackage ../development/python-modules/sqlcipher3-wheels {};
+
   sqlfmt = callPackage ../development/python-modules/sqlfmt { };
 
   sqlglot = callPackage ../development/python-modules/sqlglot { };
@@ -15500,6 +15526,12 @@ self: super: with self; {
   stix2-validator = callPackage ../development/python-modules/stix2-validator { };
 
   stm32loader = callPackage ../development/python-modules/stm32loader { };
+
+  standard-aifc = callPackage ../development/python-modules/standard-aifc { };
+
+  standard-chunk = callPackage ../development/python-modules/standard-chunk { };
+
+  standard-telnetlib = callPackage ../development/python-modules/standard-telnetlib { };
 
   stone = callPackage ../development/python-modules/stone { };
 
@@ -16379,6 +16411,8 @@ self: super: with self; {
   tree-sitter-javascript = callPackage ../development/python-modules/tree-sitter-javascript { };
 
   tree-sitter-json = callPackage ../development/python-modules/tree-sitter-json { };
+
+  tree-sitter-make = callPackage ../development/python-modules/tree-sitter-make { };
 
   tree-sitter-languages = callPackage ../development/python-modules/tree-sitter-languages { };
 

@@ -11,22 +11,19 @@
   pythonOlder,
   pyyaml,
   setuptools,
-  apple-sdk_11,
 }:
 
 buildPythonPackage rec {
   pname = "watchdog";
-  version = "5.0.3";
+  version = "6.0.0";
   pyproject = true;
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-EI9Cp/A0UEKoVNTQrQg0t0HUITMNX1dbgcsnuINQAXY=";
+    hash = "sha256-nd98gv2jro4k3s2hM47eZuHJmIPbk3Edj7lB6qLYwoI=";
   };
 
   build-system = [ setuptools ];
-
-  buildInputs = lib.optional stdenv.hostPlatform.isDarwin apple-sdk_11;
 
   optional-dependencies.watchmedo = [ pyyaml ];
 

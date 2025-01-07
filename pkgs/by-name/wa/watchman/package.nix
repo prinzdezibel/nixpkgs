@@ -26,8 +26,6 @@
   fbthrift,
   fb303,
   cpptoml,
-  apple-sdk_11,
-  darwinMinVersionHook,
 
   gtest,
 
@@ -43,7 +41,7 @@ stdenv.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "facebook";
     repo = "watchman";
-    rev = "refs/tags/v${finalAttrs.version}";
+    tag = "v${finalAttrs.version}";
     hash = "sha256-w8Xm0xAkPH/Yapph/K8uPoPQxfc9bHLEDr0wFrNJ2LA=";
   };
 
@@ -58,25 +56,20 @@ stdenv.mkDerivation (finalAttrs: {
     removeReferencesTo
   ];
 
-  buildInputs =
-    [
-      pcre2
-      openssl
-      gflags
-      glog
-      libevent
-      edencommon
-      folly
-      fizz
-      wangle
-      fbthrift
-      fb303
-      cpptoml
-    ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      apple-sdk_11
-      (darwinMinVersionHook "11.0")
-    ];
+  buildInputs = [
+    pcre2
+    openssl
+    gflags
+    glog
+    libevent
+    edencommon
+    folly
+    fizz
+    wangle
+    fbthrift
+    fb303
+    cpptoml
+  ];
 
   checkInputs = [
     gtest
