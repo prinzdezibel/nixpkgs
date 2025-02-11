@@ -1,7 +1,7 @@
 {
   stdenv,
   lib,
-  substituteAll,
+  replaceVars,
   fetchFromGitHub,
   buildPythonPackage,
   pythonOlder,
@@ -45,8 +45,7 @@ buildPythonPackage rec {
   };
 
   patches = [
-    (substituteAll {
-      src = ./fix-dependency-finding.patch;
+    (replaceVars ./fix-dependency-finding.patch {
       buildinputs_include = builtins.toJSON (
         builtins.concatMap (dep: [
           "${lib.getDev dep}/"
@@ -70,6 +69,7 @@ buildPythonPackage rec {
       # cython was pinned to fix windows build hangs (pygame-community/pygame-ce/pull/3015)
       substituteInPlace pyproject.toml \
         --replace-fail '"meson<=1.5.1",' '"meson",' \
+        --replace-fail '"meson-python<=0.16.0",' '"meson-python",' \
         --replace-fail '"ninja<=1.11.1.1",' "" \
         --replace-fail '"cython<=3.0.11",' '"cython",' \
         --replace-fail '"sphinx<=7.2.6",' ""

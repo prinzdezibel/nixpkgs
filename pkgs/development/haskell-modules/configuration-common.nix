@@ -348,6 +348,16 @@ self: super: {
   ghc-datasize = disableLibraryProfiling super.ghc-datasize;
   ghc-vis = disableLibraryProfiling super.ghc-vis;
 
+  # Fix 32bit struct being used for 64bit syscall on 32bit platforms
+  # https://github.com/haskellari/lukko/issues/15
+  lukko = appendPatches [
+    (fetchpatch {
+      name = "lukko-ofd-locking-32bit.patch";
+      url = "https://github.com/haskellari/lukko/pull/32/commits/4e69ffad996c3771f50017b97375af249dd17c85.patch";
+      sha256 = "0n8vig48irjz0jckc20dzc23k16fl5hznrc0a81y02ms72msfwi1";
+    })
+  ] super.lukko;
+
   # Fixes compilation for basement on i686 for GHC >= 9.4
   # https://github.com/haskell-foundation/foundation/pull/573
   # Patch would not work for GHC >= 9.2 where it breaks compilation on x86_64
@@ -503,22 +513,22 @@ self: super: {
 
   # Manually maintained
   cachix-api = overrideCabal (drv: {
-    version = "1.7.5";
+    version = "1.7.6";
     src = pkgs.fetchFromGitHub {
       owner = "cachix";
       repo = "cachix";
-      rev = "v1.7.5";
-      sha256 = "sha256-KxuGSoVUFnQLB2ZcYODW7AVPAh9JqRlD5BrfsC/Q4qs=";
+      rev = "v1.7.6";
+      hash = "sha256-8HFvG7fvIFbgtaYAY2628Tb89fA55nPm2jSiNs0/Cws=";
     };
     postUnpack = "sourceRoot=$sourceRoot/cachix-api";
   }) super.cachix-api;
   cachix = (overrideCabal (drv: {
-    version = "1.7.5";
+    version = "1.7.6";
     src = pkgs.fetchFromGitHub {
       owner = "cachix";
       repo = "cachix";
-      rev = "v1.7.5";
-      sha256 = "sha256-KxuGSoVUFnQLB2ZcYODW7AVPAh9JqRlD5BrfsC/Q4qs=";
+      rev = "v1.7.6";
+      hash = "sha256-8HFvG7fvIFbgtaYAY2628Tb89fA55nPm2jSiNs0/Cws=";
     };
     postUnpack = "sourceRoot=$sourceRoot/cachix";
   }) (lib.pipe
@@ -1188,6 +1198,21 @@ self: super: {
       done
     '';
   }) super.cryptol;
+
+  # Z3 removed aliases for boolean types in 4.12
+  inherit (
+    let
+      fixZ3 = appendConfigureFlags [
+        "--hsc2hs-option=-DZ3_Bool=bool"
+        "--hsc2hs-option=-DZ3_TRUE=true"
+        "--hsc2hs-option=-DZ3_FALSE=false"
+      ];
+    in
+    {
+      z3 = fixZ3 super.z3;
+      hz3 = fixZ3 super.hz3;
+    }
+  ) z3 hz3;
 
   # Tests try to invoke external process and process == 1.4
   grakn = dontCheck (doJailbreak super.grakn);
@@ -1979,17 +2004,22 @@ self: super: {
   # https://github.com/NixOS/nixpkgs/pull/349683
   pandoc-cli_3_6 = super.pandoc-cli_3_6.overrideScope (
     self: super: {
+      commonmark-extensions = self.commonmark-extensions_0_2_5_6;
+      commonmark-pandoc = self.commonmark-pandoc_0_2_2_3;
       doclayout = self.doclayout_0_5;
       hslua-module-doclayout = self.hslua-module-doclayout_1_2_0;
       lpeg = self.lpeg_1_1_0;
       pandoc = self.pandoc_3_6;
       pandoc-lua-engine = self.pandoc-lua-engine_0_4;
+      pandoc-lua-marshal = self.pandoc-lua-marshal_0_3_0;
       pandoc-server = self.pandoc-server_0_1_0_10;
+      skylighting = self.skylighting_0_14_5;
+      skylighting-core = self.skylighting-core_0_14_5;
       texmath = self.texmath_0_12_8_12;
       tls = self.tls_2_0_6;
       toml-parser = self.toml-parser_2_0_1_0;
       typst = self.typst_0_6_1;
-      typst-symbols = self.typst-symbols_0_1_6;
+      typst-symbols = self.typst-symbols_0_1_7;
     }
   );
 

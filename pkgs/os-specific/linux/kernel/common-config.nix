@@ -313,6 +313,7 @@ let
         NET_L3_MASTER_DEV = option yes;
         NET_FOU_IP_TUNNELS = option yes;
         IP_NF_TARGET_REDIRECT = module;
+        NETKIT = whenAtLeast "6.7" yes;
 
         PPP_MULTILINK = yes; # PPP multilink support
         PPP_FILTER = yes;
@@ -509,7 +510,7 @@ let
           with stdenv.hostPlatform;
           (lib.versionAtLeast version "5.13" && (isx86 || isPower64))
           || (lib.versionAtLeast version "6.2" && isAarch64 && !stdenv.cc.isClang)
-          || (lib.versionAtLeast version "6.5" && isLoongarch64 && !stdenv.cc.isClang)
+          || (lib.versionAtLeast version "6.5" && isLoongArch64 && !stdenv.cc.isClang)
           || (lib.versionAtLeast version "6.10" && isRiscV64 && !stdenv.cc.isClang)
         ) yes;
 
@@ -537,6 +538,8 @@ let
         DRM_I915_GVT_KVMGT = module;
         # Enable Hyper-V Synthetic DRM Driver
         DRM_HYPERV = whenAtLeast "5.14" module;
+        # And disable the legacy framebuffer driver when we have the new one
+        FB_HYPERV = whenAtLeast "5.14" no;
       }
       // lib.optionalAttrs (stdenv.hostPlatform.system == "aarch64-linux") {
         # enable HDMI-CEC on RPi boards
@@ -1339,7 +1342,8 @@ let
             ACPI_HOTPLUG_CPU = yes;
             ACPI_HOTPLUG_MEMORY = yes;
             MEMORY_HOTPLUG = yes;
-            MEMORY_HOTPLUG_DEFAULT_ONLINE = yes;
+            MEMORY_HOTPLUG_DEFAULT_ONLINE = whenOlder "6.14" yes;
+            MHP_DEFAULT_ONLINE_TYPE_ONLINE_AUTO = whenAtLeast "6.14" yes;
             MEMORY_HOTREMOVE = yes;
             HOTPLUG_CPU = yes;
             MIGRATION = yes;

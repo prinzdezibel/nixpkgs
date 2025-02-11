@@ -5,7 +5,7 @@
 , img ? pkgs.stdenv.hostPlatform.linux-kernel.target
 , storeDir ? builtins.storeDir
 , rootModules ?
-    [ "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_balloon" "virtio_rng" "ext4" "unix" "virtiofs" "crc32c_generic" "iso9660" "loop"]
+    [ "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_balloon" "virtio_rng" "ext4" "virtiofs" "crc32c_generic" "iso9660" "loop" ]
 }:
 
 let
@@ -257,10 +257,9 @@ rec {
   vmRunCommand = qemuCommand: writeText "vm-run" ''
     ${coreutils}/bin/mkdir xchg
     export > xchg/saved-env
-    PATH=${coreutils}/bin
 
     if [ -f "''${NIX_ATTRS_SH_FILE-}" ]; then
-      cp $NIX_ATTRS_JSON_FILE $NIX_ATTRS_SH_FILE xchg
+      ${coreutils}/bin/cp $NIX_ATTRS_JSON_FILE $NIX_ATTRS_SH_FILE xchg
       source "$NIX_ATTRS_SH_FILE"
     fi
     source $stdenv/setup
@@ -278,7 +277,7 @@ rec {
     # Write the command to start the VM to a file so that the user can
     # debug inside the VM if the build fails (when Nix is called with
     # the -K option to preserve the temporary build directory).
-    cat > ./run-vm <<EOF
+    ${coreutils}/bin/cat > ./run-vm <<EOF
     #! ${bash}/bin/sh
 
     ''${diskImage:+diskImage=$diskImage}
@@ -288,7 +287,7 @@ rec {
     ${qemuCommand}
     EOF
 
-    chmod +x ./run-vm
+    ${coreutils}/bin/chmod +x ./run-vm
     source ./run-vm
 
     if ! test -e xchg/in-vm-exit; then
@@ -296,7 +295,7 @@ rec {
       exit 1
     fi
 
-    exitCode="$(cat xchg/in-vm-exit)"
+    exitCode="$(${coreutils}/bin/cat xchg/in-vm-exit)"
     if [ "$exitCode" != "0" ]; then
       exit "$exitCode"
     fi

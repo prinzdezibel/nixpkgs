@@ -149,14 +149,6 @@ self: super:
 
   libX11 = super.libX11.overrideAttrs (attrs: {
     outputs = [ "out" "dev" "man" ];
-    patches = [
-      # Fix spurious Xerror when running synchronized
-      # https://gitlab.freedesktop.org/xorg/lib/libx11/-/merge_requests/264
-      (fetchpatch {
-        url = "https://gitlab.freedesktop.org/xorg/lib/libx11/-/commit/f3d6ebac35301d4ad068e307f0fbe6aa12ccbccb.patch";
-        hash = "sha256-wQNMsbQ+h9VlNiWr+r34AxvViC8fq02ZhcARRnw7O9k=";
-      })
-    ];
     configureFlags = attrs.configureFlags or []
       ++ malloc0ReturnsNullCrossFlag
       ++ lib.optional (stdenv.targetPlatform.useLLVM or false) "ac_cv_path_RAWCPP=cpp";
@@ -459,7 +451,7 @@ self: super:
   transset = addMainProgram super.transset { };
 
   utilmacros = super.utilmacros.overrideAttrs (attrs: { # not needed for releases, we propagate the needed tools
-    propagatedBuildInputs = attrs.propagatedBuildInputs or [] ++ [ automake autoconf libtool ];
+    propagatedNativeBuildInputs = attrs.propagatedNativeBuildInputs or [] ++ [ automake autoconf libtool ];
   });
 
   viewres = addMainProgram super.viewres { };
@@ -583,8 +575,13 @@ self: super:
   });
 
   xf86videonouveau = super.xf86videonouveau.overrideAttrs (attrs: {
-    nativeBuildInputs = attrs.nativeBuildInputs ++ [ autoreconfHook ];
-    buildInputs =  attrs.buildInputs ++ [ xorg.utilmacros ];
+    nativeBuildInputs = attrs.nativeBuildInputs ++ [
+      autoreconfHook
+      buildPackages.xorg.utilmacros # For xorg-utils.m4 macros
+      buildPackages.xorg.xorgserver # For xorg-server.m4 macros
+    ];
+    # fixes `implicit declaration of function 'wfbScreenInit'; did you mean 'fbScreenInit'?
+    NIX_CFLAGS_COMPILE = "-Wno-error=implicit-function-declaration";
   });
 
   xf86videoglint = super.xf86videoglint.overrideAttrs (attrs: {
@@ -716,7 +713,7 @@ self: super:
     '';
   in
     xorg.xkeyboardconfig.overrideAttrs (old: {
-      buildInputs = old.buildInputs ++ [ automake ];
+      nativeBuildInputs = old.nativeBuildInputs ++ [ automake ];
       postPatch   = lib.concatStrings (lib.mapAttrsToList patchIn layouts);
     });
 

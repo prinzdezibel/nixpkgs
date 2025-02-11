@@ -6,6 +6,7 @@ from typing import Any
 from unittest.mock import ANY, call, patch
 
 import pytest
+from pytest import MonkeyPatch
 
 import nixos_rebuild.models as m
 import nixos_rebuild.nix as n
@@ -19,7 +20,7 @@ from .helpers import get_qualified_name
     autospec=True,
     return_value=CompletedProcess([], 0, stdout=" \n/path/to/file\n "),
 )
-def test_build(mock_run: Any, monkeypatch: Any) -> None:
+def test_build(mock_run: Any) -> None:
     assert n.build(
         "config.system.build.attr",
         m.BuildAttr("<nixpkgs/nixos>", None),
@@ -51,7 +52,8 @@ def test_build(mock_run: Any, monkeypatch: Any) -> None:
     autospec=True,
     return_value=CompletedProcess([], 0, stdout=" \n/path/to/file\n "),
 )
-def test_build_flake(mock_run: Any) -> None:
+def test_build_flake(mock_run: Any, monkeypatch: MonkeyPatch, tmpdir: Path) -> None:
+    monkeypatch.chdir(tmpdir)
     flake = m.Flake.parse(".#hostname")
 
     assert n.build_flake(
@@ -77,7 +79,7 @@ def test_build_flake(mock_run: Any) -> None:
 
 @patch(get_qualified_name(n.run_wrapper, n), autospec=True)
 @patch(get_qualified_name(n.uuid4, n), autospec=True)
-def test_build_remote(mock_uuid4: Any, mock_run: Any, monkeypatch: Any) -> None:
+def test_build_remote(mock_uuid4: Any, mock_run: Any, monkeypatch: MonkeyPatch) -> None:
     build_host = m.Remote("user@host", [], None)
     monkeypatch.setenv("NIX_SSHOPTS", "--ssh opts")
 
@@ -130,7 +132,7 @@ def test_build_remote(mock_uuid4: Any, mock_run: Any, monkeypatch: Any) -> None:
                     Path("/path/to/file"),
                 ],
                 extra_env={
-                    "NIX_SSHOPTS": " ".join(p.SSH_DEFAULT_OPTS + ["--ssh opts"])
+                    "NIX_SSHOPTS": " ".join([*p.SSH_DEFAULT_OPTS, "--ssh opts"])
                 },
             ),
             call(
@@ -165,7 +167,10 @@ def test_build_remote(mock_uuid4: Any, mock_run: Any, monkeypatch: Any) -> None:
     autospec=True,
     return_value=CompletedProcess([], 0, stdout=" \n/path/to/file\n "),
 )
-def test_build_remote_flake(mock_run: Any, monkeypatch: Any) -> None:
+def test_build_remote_flake(
+    mock_run: Any, monkeypatch: MonkeyPatch, tmpdir: Path
+) -> None:
+    monkeypatch.chdir(tmpdir)
     flake = m.Flake.parse(".#hostname")
     build_host = m.Remote("user@host", [], None)
     monkeypatch.setenv("NIX_SSHOPTS", "--ssh opts")
@@ -201,7 +206,7 @@ def test_build_remote_flake(mock_run: Any, monkeypatch: Any) -> None:
                     Path("/path/to/file"),
                 ],
                 extra_env={
-                    "NIX_SSHOPTS": " ".join(p.SSH_DEFAULT_OPTS + ["--ssh opts"])
+                    "NIX_SSHOPTS": " ".join([*p.SSH_DEFAULT_OPTS, "--ssh opts"])
                 },
             ),
             call(
@@ -221,7 +226,7 @@ def test_build_remote_flake(mock_run: Any, monkeypatch: Any) -> None:
     )
 
 
-def test_copy_closure(monkeypatch: Any) -> None:
+def test_copy_closure(monkeypatch: MonkeyPatch) -> None:
     closure = Path("/path/to/closure")
     with patch(get_qualified_name(n.run_wrapper, n), autospec=True) as mock_run:
         n.copy_closure(closure, None)
@@ -242,14 +247,14 @@ def test_copy_closure(monkeypatch: Any) -> None:
         mock_run.assert_called_with(
             ["nix-copy-closure", "--copy-flag", "--from", "user@build.host", closure],
             extra_env={
-                "NIX_SSHOPTS": " ".join(p.SSH_DEFAULT_OPTS + ["--ssh build-opt"])
+                "NIX_SSHOPTS": " ".join([*p.SSH_DEFAULT_OPTS, "--ssh build-opt"])
             },
         )
 
     monkeypatch.setenv("NIX_SSHOPTS", "--ssh build-target-opt")
     monkeypatch.setattr(n, "WITH_NIX_2_18", True)
     extra_env = {
-        "NIX_SSHOPTS": " ".join(p.SSH_DEFAULT_OPTS + ["--ssh build-target-opt"])
+        "NIX_SSHOPTS": " ".join([*p.SSH_DEFAULT_OPTS, "--ssh build-target-opt"])
     }
     with patch(get_qualified_name(n.run_wrapper, n), autospec=True) as mock_run:
         n.copy_closure(closure, target_host, build_host, {"copy_flag": True})
@@ -285,9 +290,9 @@ def test_copy_closure(monkeypatch: Any) -> None:
 
 
 @patch(get_qualified_name(n.run_wrapper, n), autospec=True)
-def test_edit(mock_run: Any, monkeypatch: Any, tmpdir: Any) -> None:
+def test_edit(mock_run: Any, monkeypatch: MonkeyPatch, tmpdir: Path) -> None:
     # Flake
-    flake = m.Flake.parse(".#attr")
+    flake = m.Flake.parse(f"{tmpdir}#attr")
     n.edit(flake, {"commit_lock_file": True})
     mock_run.assert_called_with(
         [
@@ -297,21 +302,118 @@ def test_edit(mock_run: Any, monkeypatch: Any, tmpdir: Any) -> None:
             "edit",
             "--commit-lock-file",
             "--",
-            ".#nixosConfigurations.attr",
+            f"{tmpdir}#nixosConfigurations.attr",
         ],
         check=False,
     )
 
     # Classic
     with monkeypatch.context() as mp:
-        default_nix = tmpdir.join("default.nix")
-        default_nix.write("{}")
+        default_nix = tmpdir / "default.nix"
+        default_nix.write_text("{}", encoding="utf-8")
 
         mp.setenv("NIXOS_CONFIG", str(tmpdir))
         mp.setenv("EDITOR", "editor")
 
         n.edit(None)
         mock_run.assert_called_with(["editor", default_nix], check=False)
+
+
+@patch(
+    get_qualified_name(n.run_wrapper, n),
+    autospec=True,
+    return_value=CompletedProcess(
+        [],
+        0,
+        """
+        {
+          "azure": "nixos-image-azure-25.05.20250102.6df2492-x86_64-linux.vhd",
+          "vmware": "nixos-image-vmware-25.05.20250102.6df2492-x86_64-linux.vmdk"
+        }
+        """,
+    ),
+)
+def test_get_build_image_variants(mock_run: Any, tmp_path: Path) -> None:
+    build_attr = m.BuildAttr("<nixpkgs/nixos>", None)
+    assert n.get_build_image_variants(build_attr) == {
+        "azure": "nixos-image-azure-25.05.20250102.6df2492-x86_64-linux.vhd",
+        "vmware": "nixos-image-vmware-25.05.20250102.6df2492-x86_64-linux.vmdk",
+    }
+    mock_run.assert_called_with(
+        [
+            "nix-instantiate",
+            "--eval",
+            "--strict",
+            "--json",
+            "--expr",
+            textwrap.dedent("""
+            let
+              value = import <nixpkgs/nixos>;
+              set = if builtins.isFunction value then value {} else value;
+            in
+              builtins.mapAttrs (n: v: v.passthru.filePath) set.config.system.build.images
+            """),
+        ],
+        stdout=PIPE,
+    )
+
+    build_attr = m.BuildAttr(Path(tmp_path), "preAttr")
+    assert n.get_build_image_variants(build_attr, {"inst_flag": True}) == {
+        "azure": "nixos-image-azure-25.05.20250102.6df2492-x86_64-linux.vhd",
+        "vmware": "nixos-image-vmware-25.05.20250102.6df2492-x86_64-linux.vmdk",
+    }
+    mock_run.assert_called_with(
+        [
+            "nix-instantiate",
+            "--eval",
+            "--strict",
+            "--json",
+            "--expr",
+            textwrap.dedent(f"""
+            let
+              value = import "{tmp_path}";
+              set = if builtins.isFunction value then value {{}} else value;
+            in
+              builtins.mapAttrs (n: v: v.passthru.filePath) set.preAttr.config.system.build.images
+            """),
+            "--inst-flag",
+        ],
+        stdout=PIPE,
+    )
+
+
+@patch(
+    get_qualified_name(n.run_wrapper, n),
+    autospec=True,
+    return_value=CompletedProcess(
+        [],
+        0,
+        """
+        {
+          "azure": "nixos-image-azure-25.05.20250102.6df2492-x86_64-linux.vhd",
+          "vmware": "nixos-image-vmware-25.05.20250102.6df2492-x86_64-linux.vmdk"
+        }
+        """,
+    ),
+)
+def test_get_build_image_variants_flake(mock_run: Any) -> None:
+    flake = m.Flake(Path("flake.nix"), "myAttr")
+    assert n.get_build_image_variants_flake(flake, {"eval_flag": True}) == {
+        "azure": "nixos-image-azure-25.05.20250102.6df2492-x86_64-linux.vhd",
+        "vmware": "nixos-image-vmware-25.05.20250102.6df2492-x86_64-linux.vmdk",
+    }
+    mock_run.assert_called_with(
+        [
+            "nix",
+            "eval",
+            "--json",
+            "flake.nix#myAttr.config.system.build.images",
+            "--apply",
+            "builtins.mapAttrs (n: v: v.passthru.filePath)",
+            "--eval-flag",
+        ],
+        stdout=PIPE,
+    )
 
 
 def test_get_nixpkgs_rev() -> None:
@@ -585,7 +687,7 @@ def test_set_profile(mock_run: Any) -> None:
 
 
 @patch(get_qualified_name(n.run_wrapper, n), autospec=True)
-def test_switch_to_configuration(mock_run: Any, monkeypatch: Any) -> None:
+def test_switch_to_configuration(mock_run: Any, monkeypatch: MonkeyPatch) -> None:
     profile_path = Path("/path/to/profile")
     config_path = Path("/path/to/config")
 
