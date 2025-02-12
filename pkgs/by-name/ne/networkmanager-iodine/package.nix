@@ -54,7 +54,7 @@ stdenv.mkDerivation {
     ];
 
   # configure.ac:53: warning: macro 'AM_GLIB_GNU_GETTEXT' not found in library
-  strictDeps = false;
+  # strictDeps = false;
 
   configureFlags = [
     "--with-gnome=${if withGnome then "yes" else "no"}"

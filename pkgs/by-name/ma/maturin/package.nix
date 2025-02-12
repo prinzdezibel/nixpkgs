@@ -25,13 +25,11 @@ rustPlatform.buildRustPackage rec {
   useFetchCargoVendor = true;
   cargoHash = "sha256-6aLWkphWLScUz6l0RJj9LmNad6aPxLz2iVxXVOXq7pg=";
 
-  buildInputs =
-    [ python3 ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      darwin.apple_sdk.frameworks.Security
-      libiconv
-    ];
-
+  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
+    darwin.apple_sdk.frameworks.Security
+    libiconv
+  ];
+  
   # Requires network access, fails in sandbox.
   doCheck = false;
 

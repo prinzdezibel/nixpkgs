@@ -6,7 +6,6 @@
 , openssl
 , ppp
 , systemd
-, glib
 , withSystemd ? lib.meta.availableOn stdenv.hostPlatform systemd
 , withPpp ? stdenv.hostPlatform.isLinux
 }:
@@ -28,7 +27,7 @@ stdenv.mkDerivation rec {
       --replace '$(DESTDIR)$(confdir)' /tmp
   '';
 
-  nativeBuildInputs = [ autoreconfHook pkg-config glib ];
+  nativeBuildInputs = [ autoreconfHook pkg-config ];
 
   buildInputs = [
     openssl

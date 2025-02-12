@@ -673,7 +673,6 @@ let
       ''
         export PATH=${binPath}:$PATH
 
-
         rootDisk=${if partitionTableType != "none" then "/dev/vda${rootPartition}" else "/dev/vda"}
 
         # It is necessary to set root filesystem unique identifier in advance, otherwise
