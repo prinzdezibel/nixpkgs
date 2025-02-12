@@ -1,25 +1,3 @@
-{ buildPackages
-, callPackage
-, cargo
-, cargo-nextest
-, clang
-, lib
-, makeSetupHook
-, maturin
-, rust
-, rustc
-, stdenv
-, python3
-
-# This confusingly-named parameter indicates the *subdirectory of
-# `target/` from which to copy the build artifacts.  It is derived
-# from a stdenv platform (or a JSON file).
-, target ? stdenv.hostPlatform.rust.cargoShortTarget
-}:
-let
- inherit (python3) pythonOnBuildForHost;
- pythonInterpreter = pythonOnBuildForHost.interpreter;
-in
 {
   buildPackages,
   callPackage,
@@ -147,8 +125,8 @@ in
     } ./cargo-setup-hook.sh
   ) { };
 
-
-  maturinBuildHook = callPackage ({ pkgsHostTarget }:
+  maturinBuildHook = callPackage (
+    { pkgsHostTarget }:
     makeSetupHook {
       name = "maturin-build-hook.sh";
       propagatedBuildInputs = [
@@ -157,8 +135,7 @@ in
         pkgsHostTarget.rustc
       ];
       substitutions = {
-        inherit (rust.envVars) rustTargetPlatformSpec setEnv;
-        pythonInterpreter = lib.versions.majorMinor pythonOnBuildForHost.version;
+        inherit (stdenv.targetPlatform.rust) rustcTarget;
       };
     } ./maturin-build-hook.sh
   ) { };

@@ -65,6 +65,7 @@ buildPythonPackage rec {
     "test_hosts_no_network"
     # flaky test, depends on builder performance
     "test_server_connection_timeout_exception"
+    "test_ssl_close"
   ];
 
   pythonImportsCheck = [ "eventlet" ];

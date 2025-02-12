@@ -18,9 +18,10 @@
   libmbim,
   libqrtr-glib,
   buildPackages,
-  withIntrospection ?
-    lib.meta.availableOn stdenv.hostPlatform gobject-introspection
-    && stdenv.hostPlatform.emulatorAvailable buildPackages,
+  withIntrospection ? false,
+  # withIntrospection ?
+  #   lib.meta.availableOn stdenv.hostPlatform gobject-introspection
+  #   && stdenv.hostPlatform.emulatorAvailable buildPackages,
   withMan ? stdenv.buildPlatform.canExecute stdenv.hostPlatform,
 }:
 
@@ -73,19 +74,21 @@ stdenv.mkDerivation rec {
   propagatedBuildInputs =
     [
       glib
-    ]
-    ++ lib.optionals withIntrospection [
       libqrtr-glib
-    ];
+    ]
+    # ++ lib.optionals withIntrospection [
+    #   libqrtr-glib
+    # ]
+    ;
 
   mesonFlags = [
     "-Dudevdir=${placeholder "out"}/lib/udev"
     (lib.mesonBool "gtk_doc" withIntrospection)
     (lib.mesonBool "introspection" withIntrospection)
     (lib.mesonBool "man" withMan)
-    (lib.mesonBool "qrtr" withIntrospection)
+    (lib.mesonBool "qrtr" true)
     (lib.mesonBool "udev" withIntrospection)
-  ];
+  ];   #
 
   doCheck = true;
 
