@@ -493,17 +493,23 @@ let
               (lib.versionAtLeast metadata.release_version "17" && lib.versionOlder metadata.release_version "19")
               [
                 # Fixes test-suite on glibc 2.40 (https://github.com/llvm/llvm-project/pull/100804)
-                (fetchpatch2 {
+                (fetchpatch {
                   url = "https://github.com/llvm/llvm-project/commit/1e8df9e85a1ff213e5868bd822877695f27504ad.patch";
-                  hash = "sha256-EX+PYGicK73lsL/J0kSZ4S5y1/NHIclBddhsnV6NPPI=";
+                  hash = "sha256-mvBlG2RxpZPFnPI7jvCMz+Fc8JuM15Ye3th1FVZMizE=";
                   stripLen = 1;
                 })
               ]
           ++
-            lib.optional (lib.versions.major metadata.release_version == "20")
-              # Fix OrcJIT
-              # PR: https://github.com/llvm/llvm-project/pull/125431
-              (metadata.getVersionFile "llvm/orcjit.patch");
+            lib.optional (lib.versionAtLeast metadata.release_version "20")
+              # Fix OrcJIT tests with page sizes > 16k
+              # PR: https://github.com/llvm/llvm-project/pull/127115
+              (
+                fetchpatch {
+                  url = "https://github.com/llvm/llvm-project/commit/415607e10b56d0e6c4661ff1ec5b9b46bf433cba.patch";
+                  stripLen = 1;
+                  hash = "sha256-vBbuduJB+NnNE9qtR93k64XKrwvc7w3vowjL/aT+iEA=";
+                }
+              );
         pollyPatches =
           [ (metadata.getVersionFile "llvm/gnu-install-dirs-polly.patch") ]
           ++ lib.optional (lib.versionAtLeast metadata.release_version "15")

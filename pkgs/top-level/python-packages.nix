@@ -2949,6 +2949,8 @@ self: super: with self; {
 
   dash-bootstrap-components = callPackage ../development/python-modules/dash-bootstrap-components { };
 
+  dash-bootstrap-templates = callPackage ../development/python-modules/dash-bootstrap-templates { };
+
   dash-core-components = callPackage ../development/python-modules/dash-core-components { };
 
   dash-html-components = callPackage ../development/python-modules/dash-html-components { };
@@ -10368,6 +10370,8 @@ self: super: with self; {
 
   pgpy = callPackage ../development/python-modules/pgpy { };
 
+  pgpy-dtc = callPackage ../development/python-modules/pgpy-dtc { };
+
   pgsanity = callPackage ../development/python-modules/pgsanity { };
 
   pgspecial = callPackage ../development/python-modules/pgspecial { };
@@ -14769,6 +14773,8 @@ self: super: with self; {
 
   sectools = callPackage ../development/python-modules/sectools { };
 
+  sectxt = callPackage ../development/python-modules/sectxt { };
+
   seedir = callPackage ../development/python-modules/seedir { };
 
   seekpath = callPackage ../development/python-modules/seekpath { };
@@ -17572,8 +17578,6 @@ self: super: with self; {
   types-docopt = callPackage ../development/python-modules/types-docopt { };
 
   types-docutils = callPackage ../development/python-modules/types-docutils { };
-
-  types-enum34 = callPackage ../development/python-modules/types-enum34 { };
 
   types-freezegun = callPackage ../development/python-modules/types-freezegun { };
 
