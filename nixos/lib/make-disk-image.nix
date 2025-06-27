@@ -667,8 +667,8 @@ let
       pkgs;
 
 
-  buildImage = crossPkgs.vmTools.runInLinuxVM (
-    pkgs.runCommand name
+  buildImage = pkgs.vmTools.runInLinuxVM (
+    crossPkgs.runCommand name
       {
         preVM = prepareImage + lib.optionalString touchEFIVars createEFIVars;
         buildInputs = with pkgs; [
