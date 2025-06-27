@@ -148,7 +148,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   src = fetchurl {
     url = "https://download.qemu.org/qemu-${finalAttrs.version}.tar.xz";
-    hash = "sha256-73hvI5jLUYRgD2mu9NXWke/URXajz/QSbTjUxv7Id1k=";
+    hash = "sha256-codP6cOVztDH/XwixDdEByaX9+4ZJqciN72BeEsvr2I=";
   };
 
   depsBuildBuild =
